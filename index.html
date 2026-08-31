@@ -125,12 +125,6 @@
             transition: transform 0.3s;
         }
 
-        .no-img-placeholder {
-            text-align: center;
-            color: #888;
-            padding: 20px;
-        }
-
         .thumbnails {
             display: flex;
             gap: 12px;
@@ -278,7 +272,7 @@
             border: 1px solid var(--neon-blue);
             border-radius: 15px;
             width: 100%;
-            max-width: 550px;
+            max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
             padding: 25px;
@@ -370,10 +364,6 @@
         <div class="gallery">
             <div class="main-image">
                 <img id="img-visor" src="1000041236_2.jpg" alt="Mini UPS Snova 180">
-                <div id="no-img-msg" class="no-img-placeholder" style="display:none;">
-                    <p style="font-size: 35px; margin: 0;">📷</p>
-                    <p><strong>Sin imágenes cargadas</strong></p>
-                </div>
             </div>
             <div class="thumbnails" id="thumbs-container">
                 <div class="thumb active" onclick="cambiarVisor('1000041236_2.jpg', this)">
@@ -419,43 +409,59 @@
         </div>
     </main>
 
-    <!-- Modal Panel Admin (Protegido por Clave) -->
+    <!-- Modal Panel Admin Integrado -->
     <div class="modal-overlay" id="admin-modal">
         <div class="modal-card">
-            <h2>⚙️ Panel de Control Administrador</h2>
             
-            <div class="form-group">
-                <label>Nombre del Producto:</label>
-                <input type="text" id="input-title">
+            <!-- Paso 1: Verificación de Contraseña -->
+            <div id="admin-login-step">
+                <h2>🔑 Acceso Administrador</h2>
+                <div class="form-group">
+                    <label>Ingrese la Contraseña de Acceso:</label>
+                    <input type="password" id="admin-pass-input" placeholder="Escribe tu clave aquí">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-close" onclick="closeAdmin()">Cancelar</button>
+                    <button class="btn-save" onclick="checkPassword()">Ingresar</button>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Precio en Dólares ($):</label>
-                <input type="number" step="0.01" id="input-price">
+            <!-- Paso 2: Edición de Datos (Oculto hasta ingresar clave correcta) -->
+            <div id="admin-form-step" style="display: none;">
+                <h2>⚙️ Panel de Control Administrador</h2>
+                
+                <div class="form-group">
+                    <label>Nombre del Producto:</label>
+                    <input type="text" id="input-title">
+                </div>
+
+                <div class="form-group">
+                    <label>Precio en Dólares ($):</label>
+                    <input type="number" step="0.01" id="input-price">
+                </div>
+
+                <div class="form-group">
+                    <label>Stock Disponible (Unidades):</label>
+                    <input type="number" id="input-stock">
+                </div>
+
+                <div class="form-group">
+                    <label>Número de WhatsApp (Sin espacios ni signos):</label>
+                    <input type="text" id="input-phone">
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-close" onclick="closeAdmin()">Cancelar</button>
+                    <button class="btn-save" onclick="saveAdminData()">Guardar Cambios</button>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Stock Disponible (Unidades):</label>
-                <input type="number" id="input-stock">
-            </div>
-
-            <div class="form-group">
-                <label>Número de WhatsApp (Sin espacios ni signos):</label>
-                <input type="text" id="input-phone">
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn-close" onclick="closeAdmin()">Cancelar</button>
-                <button class="btn-save" onclick="saveAdminData()">Guardar Cambios</button>
-            </div>
         </div>
     </div>
 
     <script>
-        // CONTRASEÑA DE ADMINISTRADOR (Puedes cambiarla aquí si deseas)
         const CLAVE_ADMINISTRADOR = "snova2026";
 
-        // Datos del producto por defecto
         const defaultData = {
             title: "Mini UPS DC1018L de Hosyond 10400mAh para Router WiFi y Módem",
             price: 50.00,
@@ -466,7 +472,6 @@
         let storeData = JSON.parse(localStorage.getItem('snova_store_data')) || defaultData;
         let rateBCV = 0;
 
-        // Contador de Visitas
         let visits = parseInt(localStorage.getItem('snova_visits_count') || '0') + 1;
         localStorage.setItem('snova_visits_count', visits);
 
@@ -476,25 +481,21 @@
             el.classList.add('active');
         }
 
-        // Cargar datos en pantalla para el cliente
         function renderStore() {
             document.getElementById('display-title').innerText = storeData.title;
             document.getElementById('display-price-usd').innerText = `$${parseFloat(storeData.price).toFixed(2)}`;
             document.getElementById('display-stock').innerText = `Stock disponible: ${storeData.stock} unid.`;
             document.getElementById('display-visits').innerText = `${visits} visitas a la tienda`;
 
-            // Enlace directo a WhatsApp
             let waMsg = encodeURIComponent(`Hola Snova 180, quiero comprar el ${storeData.title} por $${parseFloat(storeData.price).toFixed(2)}`);
             document.getElementById('btn-wa').href = `https://wa.me/${storeData.phone}?text=${waMsg}`;
 
-            // Cálculo en Bolívares
             if(rateBCV > 0) {
                 let bs = (storeData.price * rateBCV).toFixed(2);
                 document.getElementById('display-price-bs').innerText = `Equivalente: ${bs} Bs`;
             }
         }
 
-        // Obtener Tasa Oficial BCV
         async function fetchBCV() {
             try {
                 let res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
@@ -508,17 +509,24 @@
             }
         }
 
-        // Abrir panel admin con verificación de contraseña
         function openAdmin() {
-            let passInput = prompt("🔑 Ingrese la contraseña de Administrador:");
-            if (passInput === CLAVE_ADMINISTRADOR) {
+            document.getElementById('admin-modal').style.display = 'flex';
+            document.getElementById('admin-login-step').style.display = 'block';
+            document.getElementById('admin-form-step').style.display = 'none';
+            document.getElementById('admin-pass-input').value = '';
+        }
+
+        function checkPassword() {
+            let inputPass = document.getElementById('admin-pass-input').value;
+            if (inputPass === CLAVE_ADMINISTRADOR) {
+                document.getElementById('admin-login-step').style.display = 'none';
+                document.getElementById('admin-form-step').style.display = 'block';
                 document.getElementById('input-title').value = storeData.title;
                 document.getElementById('input-price').value = storeData.price;
                 document.getElementById('input-stock').value = storeData.stock;
                 document.getElementById('input-phone').value = storeData.phone;
-                document.getElementById('admin-modal').style.display = 'flex';
-            } else if (passInput !== null) {
-                alert("🔒 Acceso denegado: Contraseña incorrecta.");
+            } else {
+                alert("🔒 Contraseña incorrecta");
             }
         }
 
