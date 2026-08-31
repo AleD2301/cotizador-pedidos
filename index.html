@@ -72,18 +72,20 @@
         }
 
         .btn-admin-trigger {
-            background: rgba(176, 0, 255, 0.2);
-            border: 1px solid var(--neon-purple);
-            color: #fff;
-            padding: 8px 16px;
+            background: rgba(176, 0, 255, 0.1);
+            border: 1px solid rgba(176, 0, 255, 0.4);
+            color: #aaa;
+            padding: 6px 12px;
             border-radius: 20px;
             cursor: pointer;
+            font-size: 12px;
             font-weight: bold;
             transition: 0.3s;
         }
 
         .btn-admin-trigger:hover {
             background: var(--neon-purple);
+            color: #fff;
             box-shadow: 0 0 15px var(--neon-purple);
         }
 
@@ -352,33 +354,46 @@
 </head>
 <body>
 
+    <!-- Header Snova 180 -->
     <header class="header">
         <div class="logo">SNOVA 180</div>
         <div class="header-right">
             <div class="tasa-bcv" id="bcv-indicator">Cargando Tasa BCV...</div>
-            <button class="btn-admin-trigger" onclick="openAdmin()">⚙️ Panel Admin</button>
+            <button class="btn-admin-trigger" onclick="openAdmin()">🔒 Admin</button>
         </div>
     </header>
 
+    <!-- Contenedor del Producto -->
     <main class="product-container">
         
+        <!-- Galería de Fotos -->
         <div class="gallery">
             <div class="main-image">
-                <img id="img-visor" src="" alt="Mini UPS Snova 180" style="display:none;">
-                <div id="no-img-msg" class="no-img-placeholder">
+                <img id="img-visor" src="1000041236_2.jpg" alt="Mini UPS Snova 180">
+                <div id="no-img-msg" class="no-img-placeholder" style="display:none;">
                     <p style="font-size: 35px; margin: 0;">📷</p>
-                    <p><strong>Sin imágenes agregadas</strong></p>
-                    <p style="font-size:12px;">Haz clic arriba en <strong>⚙️ Panel Admin</strong> para subir las fotos desde tu celular o computadora.</p>
+                    <p><strong>Sin imágenes cargadas</strong></p>
                 </div>
             </div>
-            <div class="thumbnails" id="thumbs-container"></div>
+            <div class="thumbnails" id="thumbs-container">
+                <div class="thumb active" onclick="cambiarVisor('1000041236_2.jpg', this)">
+                    <img src="1000041236_2.jpg" alt="Vista 1">
+                </div>
+                <div class="thumb" onclick="cambiarVisor('1000041241_2.jpg', this)">
+                    <img src="1000041241_2.jpg" alt="Vista 2">
+                </div>
+                <div class="thumb" onclick="cambiarVisor('1000041208_2.jpg', this)">
+                    <img src="1000041208_2.jpg" alt="Vista 3">
+                </div>
+            </div>
         </div>
 
+        <!-- Detalles del Producto -->
         <div class="details">
-            <h1 class="title" id="display-title">Mini UPS DC1018L 10400mAh</h1>
+            <h1 class="title" id="display-title">Mini UPS DC1018L de Hosyond 10400mAh para Router WiFi y Módem</h1>
             
             <div class="stars">
-                ★★★★★ <span style="color: #aaa; font-size: 13px;">(Calidad Garantizada)</span>
+                ★★★★★ <span style="color: #aaa; font-size: 13px;">(245 opiniones - Alta Calidad)</span>
             </div>
 
             <div>
@@ -388,11 +403,12 @@
 
             <div class="stock-badge" id="display-stock">Stock disponible: 10 unid.</div>
 
-            <ul class="features-list" id="display-features">
+            <ul class="features-list">
                 <li>Batería de Larga Duración: Horas de energía ininterrumpida.</li>
                 <li>Salidas Múltiples: 5V, 9V, 12V, 15V y 24V.</li>
-                <li>Soporte POE: Para cámaras de seguridad y antenas.</li>
-                <li>Potencia Máxima de Salida: Hasta 18W.</li>
+                <li>Soporte POE: Para cámaras de seguridad y antenas (15V/24V).</li>
+                <li>Rendimiento Fiable: Hasta 18W de salida máxima.</li>
+                <li>Gestión Avanzada: Indicadores LED claros.</li>
             </ul>
 
             <a href="#" id="btn-wa" class="btn-buy" target="_blank">Comprar por WhatsApp</a>
@@ -403,9 +419,10 @@
         </div>
     </main>
 
+    <!-- Modal Panel Admin (Protegido por Clave) -->
     <div class="modal-overlay" id="admin-modal">
         <div class="modal-card">
-            <h2>⚙️ Panel de Control Snova 180</h2>
+            <h2>⚙️ Panel de Control Administrador</h2>
             
             <div class="form-group">
                 <label>Nombre del Producto:</label>
@@ -423,14 +440,8 @@
             </div>
 
             <div class="form-group">
-                <label>Número de WhatsApp (ej: 584145922011):</label>
+                <label>Número de WhatsApp (Sin espacios ni signos):</label>
                 <input type="text" id="input-phone">
-            </div>
-
-            <div class="form-group">
-                <label>Subir Imágenes de la Galería (Selecciona 1 o varias fotos):</label>
-                <input type="file" id="input-files" accept="image/*" multiple onchange="handleImageUpload(event)">
-                <p style="font-size:11px; color:#888; margin-top:4px;">Se guardarán automáticamente en tu página.</p>
             </div>
 
             <div class="modal-actions">
@@ -441,68 +452,49 @@
     </div>
 
     <script>
-        // Datos por defecto
+        // CONTRASEÑA DE ADMINISTRADOR (Puedes cambiarla aquí si deseas)
+        const CLAVE_ADMINISTRADOR = "snova2026";
+
+        // Datos del producto por defecto
         const defaultData = {
             title: "Mini UPS DC1018L de Hosyond 10400mAh para Router WiFi y Módem",
             price: 50.00,
             stock: 10,
-            phone: "584145922011",
-            images: []
+            phone: "584145922011"
         };
 
         let storeData = JSON.parse(localStorage.getItem('snova_store_data')) || defaultData;
         let rateBCV = 0;
 
-        // Registrar contador de visitas
+        // Contador de Visitas
         let visits = parseInt(localStorage.getItem('snova_visits_count') || '0') + 1;
         localStorage.setItem('snova_visits_count', visits);
 
-        // Cargar Datos en Pantalla
+        function cambiarVisor(src, el) {
+            document.getElementById('img-visor').src = src;
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // Cargar datos en pantalla para el cliente
         function renderStore() {
             document.getElementById('display-title').innerText = storeData.title;
             document.getElementById('display-price-usd').innerText = `$${parseFloat(storeData.price).toFixed(2)}`;
             document.getElementById('display-stock').innerText = `Stock disponible: ${storeData.stock} unid.`;
             document.getElementById('display-visits').innerText = `${visits} visitas a la tienda`;
 
-            // WhatsApp link
-            let waMsg = encodeURIComponent(`Hola Snova 180, quiero comprar el ${storeData.title} por $${storeData.price}`);
+            // Enlace directo a WhatsApp
+            let waMsg = encodeURIComponent(`Hola Snova 180, quiero comprar el ${storeData.title} por $${parseFloat(storeData.price).toFixed(2)}`);
             document.getElementById('btn-wa').href = `https://wa.me/${storeData.phone}?text=${waMsg}`;
 
-            // Calcular BS
+            // Cálculo en Bolívares
             if(rateBCV > 0) {
                 let bs = (storeData.price * rateBCV).toFixed(2);
                 document.getElementById('display-price-bs').innerText = `Equivalente: ${bs} Bs`;
             }
-
-            // Galería de Imágenes
-            let visor = document.getElementById('img-visor');
-            let placeholder = document.getElementById('no-img-msg');
-            let thumbsContainer = document.getElementById('thumbs-container');
-            thumbsContainer.innerHTML = '';
-
-            if (storeData.images && storeData.images.length > 0) {
-                visor.src = storeData.images[0];
-                visor.style.display = 'block';
-                placeholder.style.display = 'none';
-
-                storeData.images.forEach((imgBase64, index) => {
-                    let thumb = document.createElement('div');
-                    thumb.className = `thumb ${index === 0 ? 'active' : ''}`;
-                    thumb.innerHTML = `<img src="${imgBase64}">`;
-                    thumb.onclick = function() {
-                        visor.src = imgBase64;
-                        document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-                        thumb.classList.add('active');
-                    };
-                    thumbsContainer.appendChild(thumb);
-                });
-            } else {
-                visor.style.display = 'none';
-                placeholder.style.display = 'block';
-            }
         }
 
-        // Obtener Tasa BCV Oficial
+        // Obtener Tasa Oficial BCV
         async function fetchBCV() {
             try {
                 let res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
@@ -516,38 +508,22 @@
             }
         }
 
-        // Panel de Administración
+        // Abrir panel admin con verificación de contraseña
         function openAdmin() {
-            document.getElementById('input-title').value = storeData.title;
-            document.getElementById('input-price').value = storeData.price;
-            document.getElementById('input-stock').value = storeData.stock;
-            document.getElementById('input-phone').value = storeData.phone;
-            document.getElementById('admin-modal').style.display = 'flex';
+            let passInput = prompt("🔑 Ingrese la contraseña de Administrador:");
+            if (passInput === CLAVE_ADMINISTRADOR) {
+                document.getElementById('input-title').value = storeData.title;
+                document.getElementById('input-price').value = storeData.price;
+                document.getElementById('input-stock').value = storeData.stock;
+                document.getElementById('input-phone').value = storeData.phone;
+                document.getElementById('admin-modal').style.display = 'flex';
+            } else if (passInput !== null) {
+                alert("🔒 Acceso denegado: Contraseña incorrecta.");
+            }
         }
 
         function closeAdmin() {
             document.getElementById('admin-modal').style.display = 'none';
-        }
-
-        // Subir imágenes y convertirlas para guardarlas localmente
-        function handleImageUpload(e) {
-            let files = e.target.files;
-            if (!files.length) return;
-
-            storeData.images = []; // Limpiar anteriores o sobreescribir
-            let loadedCount = 0;
-
-            for (let i = 0; i < files.length; i++) {
-                let reader = new FileReader();
-                reader.onload = function(event) {
-                    storeData.images.push(event.target.result);
-                    loadedCount++;
-                    if(loadedCount === files.length) {
-                        alert("¡Imágenes procesadas correctamente!");
-                    }
-                };
-                reader.readAsDataURL(files[i]);
-            }
         }
 
         function saveAdminData() {
@@ -559,10 +535,9 @@
             localStorage.setItem('snova_store_data', JSON.stringify(storeData));
             renderStore();
             closeAdmin();
-            alert("¡Cambios guardados con éxito!");
+            alert("¡Cambios guardados correctamente!");
         }
 
-        // Inicio
         window.onload = function() {
             fetchBCV();
             renderStore();
