@@ -56,24 +56,21 @@
     <script>
         const priceUsd = 50.00;
 
-        // Función para consultar la tasa BCV automáticamente en vivo
         async function fetchBcvRate() {
             try {
-                // Usamos una API pública de monitoreo de tasas en Venezuela
-                let response = await fetch('https://pydolarve.org/api/v1/dollar?page=bcv');
+                // Usamos un servicio proxy seguro compatible con navegadores web
+                let response = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
                 let data = await response.json();
-                let tasaOficial = data.monitors.usd.price;
+                let tasaOficial = data.promedio;
 
-                // Actualizar la pantalla con la tasa obtenida
-                document.getElementById('bcvRate').innerText = tasaOficial.toLocaleString('es-VE', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+                document.getElementById('bcvRate').innerText = tasaOficial.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-                // Calcular el total en bolívares
                 let totalBs = (priceUsd * tasaOficial).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 document.getElementById('priceBs').innerText = `Aprox. ${totalBs} Bs`;
             } catch (error) {
-                // Plan de respaldo por si falla la red en algún momento
+                // Respaldo automático garantizado
                 let tasaRespaldo = 791.6667;
-                document.getElementById('bcvRate').innerText = tasaRespaldo;
+                document.getElementById('bcvRate').innerText = tasaRespaldo.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 let totalBs = (priceUsd * tasaRespaldo).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 document.getElementById('priceBs').innerText = `Aprox. ${totalBs} Bs`;
             }
