@@ -16,9 +16,13 @@
         .thumbs { display: flex; gap: 10px; width: 100%; justify-content: center; }
         .thumb { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; border: 2px solid #4a2e80; cursor: pointer; transition: 0.2s; }
         .thumb.active { border-color: #00f5d4; }
-        .info-box { background: #1a1533; padding: 15px; border-radius: 15px; border: 1px solid #4a2e80; }
-        .price { font-size: 20px; color: #00f5d4; font-weight: bold; margin-bottom: 10px; }
-        .btn-buy { display: block; width: 100%; background: #25d366; color: white; text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 15px; box-sizing: border-box; }
+        .info-box { background: #1a1533; padding: 15px; border-radius: 15px; border: 1px solid #4a2e80; display: flex; flex-direction: column; gap: 10px; }
+        .product-title { font-size: 18px; font-weight: bold; color: #fff; margin: 0; }
+        .price-usd { font-size: 22px; color: #00f5d4; font-weight: bold; }
+        .price-bs { font-size: 14px; color: #b5179e; font-weight: bold; }
+        .stock-badge { display: inline-block; background: rgba(0, 245, 212, 0.1); border: 1px solid #00f5d4; color: #00f5d4; padding: 4px 8px; border-radius: 6px; font-size: 12px; width: fit-content; }
+        .description { font-size: 13px; line-height: 1.4; color: #ccc; margin: 0; }
+        .btn-buy { display: block; width: 100%; background: #25d366; color: white; text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 5px; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -28,7 +32,7 @@
             <a href="#" class="admin-btn" onclick="toggleAdmin(event)">🔒 Admin</a>
         </div>
 
-        <div class="bcv-box">Tasa BCV Oficial: 791.6667 Bs</div>
+        <div class="bcv-box">Tasa BCV Oficial: <span id="bcvRate">791.6667</span> Bs</div>
 
         <div class="gallery-box">
             <img id="mainImage" class="main-image" src="https://i.postimg.cc/qqMWb2NW/Whats-App-Image-2026-08-29-at-9-27-57-PM.png" alt="Mini UPS Snova 180">
@@ -40,23 +44,33 @@
         </div>
 
         <div class="info-box">
-            <div class="price">Mini UPS Snova 180</div>
-            <p style="font-size: 14px; line-height: 1.4; color: #ccc;">Mantén tu router encendido y con internet durante los cortes de electricidad. Dispositivo de respaldo automático.</p>
-            <a href="https://wa.me/?text=Hola,%20estoy%20interesado%20en%20el%20Mini%20UPS%20Snova%20180" class="btn-buy" target="_blank">Pedir por WhatsApp</a>
+            <p class="product-title">Mini UPS DC1018D para Router WiFi</p>
+            <div class="price-usd">$50.00 USD</div>
+            <div class="price-bs" id="priceBs">Aprox. 39,583.34 Bs</div>
+            <div class="stock-badge">📦 Stock disponible: 12 unidades</div>
+            <p class="description">Dispositivo de respaldo automático de energía. Mantén tu router y modem encendidos durante los cortes de electricidad. Batería de alta capacidad.</p>
+            <a href="https://wa.me/?text=Hola,%20estoy%20interesado%20en%20el%20Mini%20UPS%20Snova%20180%20por%20$50" class="btn-buy" target="_blank">Pedir por WhatsApp</a>
         </div>
     </div>
 
     <script>
+        // Cálculo automático de precio en bolívares basado en tasa BCV
+        const bcv = 791.6667;
+        const priceUsd = 50.00;
+        const totalBs = (priceUsd * bcv).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('priceBs').innerText = `Aprox. ${totalBs} Bs`;
+
         function changeImage(element, src) {
             document.getElementById('mainImage').src = src;
             document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
         }
+
         function toggleAdmin(e) {
             e.preventDefault();
             let pass = prompt("Contraseña de Administrador:");
             if(pass === "snova2026") {
-                alert("¡Acceso concedido!");
+                alert("¡Acceso concedido al panel!");
             } else if(pass !== null) {
                 alert("Contraseña incorrecta.");
             }
