@@ -126,6 +126,7 @@
         .thumb img {
             max-width: 90%;
             max-height: 90%;
+            object-fit: contain;
         }
 
         .thumb:hover, .thumb.active {
@@ -133,7 +134,7 @@
             box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
         }
 
-        /* --- Detalles del Producto (Estilo Amazon Futurista) --- */
+        /* --- Detalles del Producto --- */
         .details {
             background: var(--card-bg);
             padding: 35px;
@@ -231,21 +232,20 @@
     <!-- Contenedor Principal del Producto -->
     <main class="product-container">
         
-        <!-- Galería (Imágenes que enviaste) -->
+        <!-- Galería (Con las nuevas imágenes) -->
         <div class="gallery">
             <div class="main-image">
-                <!-- Usamos la primera imagen como principal -->
-                <img id="img-visor" src="1000041236.jpg" alt="Mini UPS Snova 180">
+                <img id="img-visor" src="1000041236_2.jpg" alt="Mini UPS Snova 180">
             </div>
             <div class="thumbnails">
-                <div class="thumb active" onclick="cambiarImagen('1000041236.jpg', this)">
-                    <img src="1000041236.jpg" alt="Vista 1">
+                <div class="thumb active" onclick="cambiarImagen('1000041236_2.jpg', this)">
+                    <img src="1000041236_2.jpg" alt="Vista Principal">
                 </div>
-                <div class="thumb" onclick="cambiarImagen('1000041241.jpg', this)">
-                    <img src="1000041241.jpg" alt="Vista 2">
+                <div class="thumb" onclick="cambiarImagen('1000041241_2.jpg', this)">
+                    <img src="1000041241_2.jpg" alt="Especificaciones">
                 </div>
-                <div class="thumb" onclick="cambiarImagen('1000041208.jpg', this)">
-                    <img src="1000041208.jpg" alt="Vista 3">
+                <div class="thumb" onclick="cambiarImagen('1000041208_2.jpg', this)">
+                    <img src="1000041208_2.jpg" alt="Detalles Técnicos">
                 </div>
             </div>
         </div>
@@ -259,7 +259,7 @@
             </div>
 
             <div>
-                <p class="price-usd">$35.00</p>
+                <p class="price-usd">$50.00</p>
                 <p class="price-bs" id="precio-bs">Calculando bolívares...</p>
             </div>
 
@@ -271,8 +271,8 @@
                 <li><strong>Gestión Avanzada:</strong> Indicadores LED claros.</li>
             </ul>
 
-            <!-- Enlace a tu WhatsApp con el número de la imagen -->
-            <a href="https://wa.me/584145922011?text=Hola%20Snova%20180,%20quiero%20comprar%20el%20Mini%20UPS%20de%20$35" class="btn-buy" target="_blank">
+            <!-- Enlace a tu WhatsApp con el número y el precio correcto -->
+            <a href="https://wa.me/584145922011?text=Hola%20Snova%20180,%20quiero%20comprar%20el%20Mini%20UPS%20de%20$50" class="btn-buy" target="_blank">
                 Comprar por WhatsApp
             </a>
         </div>
@@ -297,7 +297,7 @@
                 let datos = await respuesta.json();
                 
                 let tasa = datos.promedio;
-                let precioDolares = 35.00;
+                let precioDolares = 50.00; // Precio establecido a $50
                 let precioBolivares = (precioDolares * tasa).toFixed(2);
                 
                 // Actualizar los textos en la pantalla
