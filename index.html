@@ -3,112 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotizador Cyberpunk - Tasa BCV Automática</title>
+    <title>Importaciones Tech USA - Catálogo & Cotizador</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #050814;
-            /* Fondo geométrico de colmenas con efecto neón futurista */
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(0, 210, 255, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.15) 0%, transparent 40%),
-                radial-gradient(
-                    circle, 
-                    rgba(0, 210, 255, 0.08) 1px, 
-                    transparent 1px
-                );
+                radial-gradient(circle, rgba(0, 210, 255, 0.08) 1px, transparent 1px);
             background-size: 100% 100%, 100% 100%, 30px 30px;
             color: #fff;
             margin: 0;
             padding: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        .card {
-            background: rgba(10, 15, 30, 0.75);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 210, 255, 0.3);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.15), inset 0 0 15px rgba(138, 43, 226, 0.1);
-            width: 100%;
-            max-width: 450px;
-            position: relative;
-            z-index: 2;
-        }
-
-        h2 {
+        header {
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 25px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        h1 {
             color: #00d2ff;
-            font-size: 26px;
+            font-size: 28px;
             letter-spacing: 1px;
             text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
-            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            color: #94a3b8;
+            font-size: 14px;
         }
 
         .tasa-badge {
-            text-align: center;
+            display: inline-block;
             background: rgba(0, 210, 255, 0.08);
             border: 1px solid rgba(0, 210, 255, 0.4);
-            padding: 10px;
+            padding: 8px 16px;
             border-radius: 8px;
             font-size: 13px;
             color: #00f0ff;
-            margin-bottom: 22px;
+            margin-top: 10px;
             box-shadow: 0 0 10px rgba(0, 210, 255, 0.1);
             font-weight: 600;
         }
 
-        .input-group {
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: rgba(10, 15, 30, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.15);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #00d2ff;
+            font-size: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
             margin-bottom: 20px;
+        }
+
+        /* Estilos del Catálogo */
+        .product-item {
+            background: rgba(5, 8, 20, 0.6);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+
+        .product-item:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 210, 255, 0.5);
+        }
+
+        .product-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #f8fafc;
+        }
+
+        .product-price {
+            color: #34d399;
+            font-weight: bold;
+            margin: 5px 0 10px 0;
+        }
+
+        .btn-select {
+            background: linear-gradient(135deg, #00f0ff, #7928ca);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        /* Estilos de la Calculadora */
+        .input-group {
+            margin-bottom: 15px;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
             color: #a5b4fc;
-            font-size: 14px;
-            letter-spacing: 0.5px;
+            font-size: 13px;
         }
 
         input {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: rgba(5, 8, 20, 0.8);
             border: 1px solid rgba(0, 210, 255, 0.3);
             border-radius: 10px;
             color: #fff;
             box-sizing: border-box;
-            font-size: 18px;
+            font-size: 16px;
             outline: none;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
 
         input:focus {
             border-color: #00f0ff;
-            box-shadow: 0 0 12px rgba(0, 210, 255, 0.4), inset 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .results {
             background: rgba(138, 43, 226, 0.05);
             border: 1px solid rgba(138, 43, 226, 0.3);
-            padding: 20px;
+            padding: 15px;
             border-radius: 12px;
-            margin-bottom: 22px;
-            box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.05);
+            margin-bottom: 20px;
         }
 
         .result-item {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-            padding-bottom: 12px;
+            padding-bottom: 8px;
         }
 
         .result-item:last-child {
@@ -118,76 +176,101 @@
         }
 
         .result-title {
-            font-size: 12px;
+            font-size: 11px;
             color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
         }
 
         .result-values {
-            font-size: 19px;
+            font-size: 16px;
             font-weight: bold;
             color: #f8fafc;
-            margin-top: 5px;
-            text-shadow: 0 0 5px rgba(255,255,255,0.2);
+            margin-top: 3px;
         }
 
         .bs-text {
             color: #34d399;
-            font-size: 16px;
-            text-shadow: 0 0 8px rgba(52, 211, 153, 0.3);
+            font-size: 14px;
         }
 
-        button {
+        .btn-whatsapp {
             width: 100%;
             background: linear-gradient(135deg, #00f0ff, #7928ca);
             color: white;
             border: none;
-            padding: 15px;
+            padding: 14px;
             border-radius: 10px;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             font-weight: bold;
-            letter-spacing: 0.5px;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
             transition: all 0.3s ease;
         }
 
-        button:hover {
-            opacity: 1;
+        .btn-whatsapp:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(121, 40, 202, 0.7), 0 0 15px rgba(0, 240, 255, 0.6);
+            box-shadow: 0 0 25px rgba(121, 40, 202, 0.7);
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>⚡ CYBER-COTIZADOR</h2>
+    <header>
+        <h1>⚡ TECH IMPORTS USA</h1>
+        <p class="subtitle">Tecnología de punta por encargo directa a la puerta de tu casa</p>
         <div id="tasaInfo" class="tasa-badge">Sincronizando tasa BCV oficial...</div>
-        
-        <div class="input-group">
-            <label for="precioTotal">Precio Total del Producto ($):</label>
-            <input type="number" id="precioTotal" placeholder="Ej. 50" step="0.01" oninput="calcularTodo()">
+    </header>
+
+    <div class="container">
+        <!-- Columna Izquierda: Catálogo de Productos -->
+        <div class="card">
+            <h2>📦 Catálogo de Productos</h2>
+            
+            <div class="product-item">
+                <div class="product-title">Smartwatch Ultra Pro Series</div>
+                <div class="product-price">$50.00</div>
+                <button class="btn-select" onclick="cargarPrecio(50)">Cotizar este producto</button>
+            </div>
+
+            <div class="product-item">
+                <div class="product-title">Audífonos Inalámbricos Canción Activa</div>
+                <div class="product-price">$35.00</div>
+                <button class="btn-select" onclick="cargarPrecio(35)">Cotizar este producto</button>
+            </div>
+
+            <div class="product-item">
+                <div class="product-title">Mini Proyector Portátil HD</div>
+                <div class="product-price">$120.00</div>
+                <button class="btn-select" onclick="cargarPrecio(120)">Cotizar este producto</button>
+            </div>
         </div>
 
-        <div class="results">
-            <div class="result-item">
-                <div class="result-title">Precio Total</div>
-                <div class="result-values">$<span id="resTotalUSD">0.00</span> <span class="bs-text">(Bs. <span id="resTotalBS">0.00</span>)</span></div>
+        <!-- Columna Derecha: Cotizador Inteligente -->
+        <div class="card">
+            <h2>⚡ Cotizador y Anticipos</h2>
+            
+            <div class="input-group">
+                <label for="precioTotal">Precio Total ($):</label>
+                <input type="number" id="precioTotal" placeholder="Ej. 50" step="0.01" oninput="calcularTodo()">
             </div>
-            <div class="result-item">
-                <div class="result-title">Anticipo (70%)</div>
-                <div class="result-values">$<span id="resAnticipoUSD">0.00</span> <span class="bs-text">(Bs. <span id="resAnticipoBS">0.00</span>)</span></div>
-            </div>
-            <div class="result-item">
-                <div class="result-title">Saldo Restante (30%)</div>
-                <div class="result-values">$<span id="resSaldoUSD">0.00</span> <span class="bs-text">(Bs. <span id="resSaldoBS">0.00</span>)</span></div>
-            </div>
-        </div>
 
-        <button onclick="copiarMensajePro()">Copiar Mensaje Completo para WhatsApp</button>
+            <div class="results">
+                <div class="result-item">
+                    <div class="result-title">Precio Total</div>
+                    <div class="result-values">$<span id="resTotalUSD">0.00</span> <span class="bs-text">(Bs. <span id="resTotalBS">0.00</span>)</span></div>
+                </div>
+                <div class="result-item">
+                    <div class="result-title">Adelanto (70%)</div>
+                    <div class="result-values">$<span id="resAnticipoUSD">0.00</span> <span class="bs-text">(Bs. <span id="resAnticipoBS">0.00</span>)</span></div>
+                </div>
+                <div class="result-item">
+                    <div class="result-title">Saldo Restante (30%)</div>
+                    <div class="result-values">$<span id="resSaldoUSD">0.00</span> <span class="bs-text">(Bs. <span id="resSaldoBS">0.00</span>)</span></div>
+                </div>
+            </div>
+
+            <button class="btn-whatsapp" onclick="copiarMensajePro()">Copiar Mensaje para WhatsApp</button>
+        </div>
     </div>
 
     <script>
@@ -205,6 +288,11 @@
                 console.error("Error al obtener la tasa:", error);
                 document.getElementById('tasaInfo').innerText = "⚠️ Error de conexión con el BCV automático";
             }
+        }
+
+        function cargarPrecio(valor) {
+            document.getElementById('precioTotal').value = valor;
+            calcularTodo();
         }
 
         function calcularTodo() {
@@ -230,7 +318,7 @@
             let precio = document.getElementById('precioTotal').value;
             
             if (!precio || precio <= 0 || tasaGlobal <= 0) {
-                alert("Por favor espera a que cargue la tasa y escribe un precio válido.");
+                alert("Por favor selecciona un producto o escribe un precio válido.");
                 return;
             }
 
@@ -241,7 +329,7 @@
             let salUSD = document.getElementById('resSaldoUSD').innerText;
             let salBS = document.getElementById('resSaldoBS').innerText;
 
-            let texto = `*Cotización de Pedido* 🛍️\n\n` +
+            let texto = `*Cotización Tech Imports USA* 🛍️\n\n` +
                         `• *Precio Total:* $${totalUSD} (Bs. ${totalBS})\n` +
                         `• *Adelanto (70%):* $${antUSD} (Bs. ${antBS})\n` +
                         `• *Restante (30%):* $${salUSD} (Bs. ${salBS})\n\n` +
@@ -249,7 +337,7 @@
                         `¿Te gustaría confirmar el encargo?`;
 
             navigator.clipboard.writeText(texto).then(() => {
-                alert("¡Cotización copiada al portapapeles con éxito!");
+                alert("¡Cotización copiada al portapapeles para WhatsApp!");
             });
         }
 
