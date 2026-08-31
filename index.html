@@ -32,7 +32,7 @@
             <a href="#" class="admin-btn" onclick="toggleAdmin(event)">🔒 Admin</a>
         </div>
 
-        <div class="bcv-box">Tasa BCV Oficial: <span id="bcvRate">791.6667</span> Bs</div>
+        <div class="bcv-box">Tasa BCV Oficial: <span id="bcvRate">Cargando...</span> Bs</div>
 
         <div class="gallery-box">
             <img id="mainImage" class="main-image" src="https://i.postimg.cc/qqMWb2NW/Whats-App-Image-2026-08-29-at-9-27-57-PM.png" alt="Mini UPS Snova 180">
@@ -46,7 +46,7 @@
         <div class="info-box">
             <p class="product-title">Mini UPS DC1018D para Router WiFi</p>
             <div class="price-usd">$50.00 USD</div>
-            <div class="price-bs" id="priceBs">Aprox. 39,583.34 Bs</div>
+            <div class="price-bs" id="priceBs">Calculando Bolívares...</div>
             <div class="stock-badge">📦 Stock disponible: 12 unidades</div>
             <p class="description">Dispositivo de respaldo automático de energía. Mantén tu router y modem encendidos durante los cortes de electricidad. Batería de alta capacidad.</p>
             <a href="https://wa.me/?text=Hola,%20estoy%20interesado%20en%20el%20Mini%20UPS%20Snova%20180%20por%20$50" class="btn-buy" target="_blank">Pedir por WhatsApp</a>
@@ -54,11 +54,32 @@
     </div>
 
     <script>
-        // Cálculo automático de precio en bolívares basado en tasa BCV
-        const bcv = 791.6667;
         const priceUsd = 50.00;
-        const totalBs = (priceUsd * bcv).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        document.getElementById('priceBs').innerText = `Aprox. ${totalBs} Bs`;
+
+        // Función para consultar la tasa BCV automáticamente en vivo
+        async function fetchBcvRate() {
+            try {
+                // Usamos una API pública de monitoreo de tasas en Venezuela
+                let response = await fetch('https://pydolarve.org/api/v1/dollar?page=bcv');
+                let data = await response.json();
+                let tasaOficial = data.monitors.usd.price;
+
+                // Actualizar la pantalla con la tasa obtenida
+                document.getElementById('bcvRate').innerText = tasaOficial.toLocaleString('es-VE', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+
+                // Calcular el total en bolívares
+                let totalBs = (priceUsd * tasaOficial).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                document.getElementById('priceBs').innerText = `Aprox. ${totalBs} Bs`;
+            } catch (error) {
+                // Plan de respaldo por si falla la red en algún momento
+                let tasaRespaldo = 791.6667;
+                document.getElementById('bcvRate').innerText = tasaRespaldo;
+                let totalBs = (priceUsd * tasaRespaldo).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                document.getElementById('priceBs').innerText = `Aprox. ${totalBs} Bs`;
+            }
+        }
+
+        fetchBcvRate();
 
         function changeImage(element, src) {
             document.getElementById('mainImage').src = src;
