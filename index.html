@@ -272,7 +272,7 @@
             border: 1px solid var(--neon-blue);
             border-radius: 15px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             max-height: 90vh;
             overflow-y: auto;
             padding: 25px;
@@ -284,6 +284,17 @@
             color: var(--neon-blue);
             border-bottom: 1px solid #333;
             padding-bottom: 10px;
+        }
+
+        .form-section-title {
+            color: var(--neon-purple);
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(176, 0, 255, 0.3);
+            padding-bottom: 4px;
         }
 
         .form-group {
@@ -298,7 +309,7 @@
             font-weight: bold;
         }
 
-        .form-group input, .form-group textarea {
+        .form-group input {
             width: 100%;
             padding: 10px;
             background: #1a1a28;
@@ -307,6 +318,13 @@
             border-radius: 8px;
             box-sizing: border-box;
             font-size: 14px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 6px;
+            background: #12121a;
+            border: 1px dashed var(--neon-blue);
+            cursor: pointer;
         }
 
         .form-group input:focus {
@@ -318,7 +336,7 @@
             display: flex;
             gap: 10px;
             justify-content: flex-end;
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         .btn-save {
@@ -348,7 +366,6 @@
 </head>
 <body>
 
-    <!-- Header Snova 180 -->
     <header class="header">
         <div class="logo">SNOVA 180</div>
         <div class="header-right">
@@ -357,28 +374,16 @@
         </div>
     </header>
 
-    <!-- Contenedor del Producto -->
     <main class="product-container">
         
-        <!-- Galería de Fotos -->
         <div class="gallery">
             <div class="main-image">
                 <img id="img-visor" src="1000041236_2.jpg" alt="Mini UPS Snova 180">
             </div>
             <div class="thumbnails" id="thumbs-container">
-                <div class="thumb active" onclick="cambiarVisor('1000041236_2.jpg', this)">
-                    <img src="1000041236_2.jpg" alt="Vista 1">
                 </div>
-                <div class="thumb" onclick="cambiarVisor('1000041241_2.jpg', this)">
-                    <img src="1000041241_2.jpg" alt="Vista 2">
-                </div>
-                <div class="thumb" onclick="cambiarVisor('1000041208_2.jpg', this)">
-                    <img src="1000041208_2.jpg" alt="Vista 3">
-                </div>
-            </div>
         </div>
 
-        <!-- Detalles del Producto -->
         <div class="details">
             <h1 class="title" id="display-title">Mini UPS DC1018L de Hosyond 10400mAh para Router WiFi y Módem</h1>
             
@@ -409,11 +414,9 @@
         </div>
     </main>
 
-    <!-- Modal Panel Admin Integrado -->
     <div class="modal-overlay" id="admin-modal">
         <div class="modal-card">
             
-            <!-- Paso 1: Verificación de Contraseña -->
             <div id="admin-login-step">
                 <h2>🔑 Acceso Administrador</h2>
                 <div class="form-group">
@@ -426,10 +429,11 @@
                 </div>
             </div>
 
-            <!-- Paso 2: Edición de Datos (Oculto hasta ingresar clave correcta) -->
             <div id="admin-form-step" style="display: none;">
                 <h2>⚙️ Panel de Control Administrador</h2>
                 
+                <div class="form-section-title">📦 Información Básica</div>
+
                 <div class="form-group">
                     <label>Nombre del Producto:</label>
                     <input type="text" id="input-title">
@@ -450,6 +454,26 @@
                     <input type="text" id="input-phone">
                 </div>
 
+                <div class="form-section-title">🖼️ Galería de Imágenes (3 Fotos)</div>
+
+                <div class="form-group">
+                    <label>Foto 1 (Principal):</label>
+                    <input type="text" id="input-img1" placeholder="URL o enlace de imagen 1">
+                    <input type="file" accept="image/*" onchange="handleFileUpload(this, 'input-img1')" style="margin-top: 5px;">
+                </div>
+
+                <div class="form-group">
+                    <label>Foto 2:</label>
+                    <input type="text" id="input-img2" placeholder="URL o enlace de imagen 2">
+                    <input type="file" accept="image/*" onchange="handleFileUpload(this, 'input-img2')" style="margin-top: 5px;">
+                </div>
+
+                <div class="form-group">
+                    <label>Foto 3:</label>
+                    <input type="text" id="input-img3" placeholder="URL o enlace de imagen 3">
+                    <input type="file" accept="image/*" onchange="handleFileUpload(this, 'input-img3')" style="margin-top: 5px;">
+                </div>
+
                 <div class="modal-actions">
                     <button class="btn-close" onclick="closeAdmin()">Cancelar</button>
                     <button class="btn-save" onclick="saveAdminData()">Guardar Cambios</button>
@@ -466,7 +490,10 @@
             title: "Mini UPS DC1018L de Hosyond 10400mAh para Router WiFi y Módem",
             price: 50.00,
             stock: 10,
-            phone: "584145922011"
+            phone: "584145922011",
+            img1: "1000041236_2.jpg",
+            img2: "1000041241_2.jpg",
+            img3: "1000041208_2.jpg"
         };
 
         let storeData = JSON.parse(localStorage.getItem('snova_store_data')) || defaultData;
@@ -478,7 +505,19 @@
         function cambiarVisor(src, el) {
             document.getElementById('img-visor').src = src;
             document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
+            if(el) el.classList.add('active');
+        }
+
+        // Convierte el archivo seleccionado por el usuario en texto Base64
+        function handleFileUpload(fileInput, targetInputId) {
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(targetInputId).value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         function renderStore() {
@@ -487,9 +526,31 @@
             document.getElementById('display-stock').innerText = `Stock disponible: ${storeData.stock} unid.`;
             document.getElementById('display-visits').innerText = `${visits} visitas a la tienda`;
 
+            // Cargar Imágenes
+            let i1 = storeData.img1 || defaultData.img1;
+            let i2 = storeData.img2 || defaultData.img2;
+            let i3 = storeData.img3 || defaultData.img3;
+
+            document.getElementById('img-visor').src = i1;
+
+            let thumbsHTML = `
+                <div class="thumb active" onclick="cambiarVisor('${i1}', this)">
+                    <img src="${i1}" alt="Vista 1">
+                </div>
+                <div class="thumb" onclick="cambiarVisor('${i2}', this)">
+                    <img src="${i2}" alt="Vista 2">
+                </div>
+                <div class="thumb" onclick="cambiarVisor('${i3}', this)">
+                    <img src="${i3}" alt="Vista 3">
+                </div>
+            `;
+            document.getElementById('thumbs-container').innerHTML = thumbsHTML;
+
+            // Enlace de WhatsApp
             let waMsg = encodeURIComponent(`Hola Snova 180, quiero comprar el ${storeData.title} por $${parseFloat(storeData.price).toFixed(2)}`);
             document.getElementById('btn-wa').href = `https://wa.me/${storeData.phone}?text=${waMsg}`;
 
+            // Cálculo Tasa BCV
             if(rateBCV > 0) {
                 let bs = (storeData.price * rateBCV).toFixed(2);
                 document.getElementById('display-price-bs').innerText = `Equivalente: ${bs} Bs`;
@@ -521,10 +582,15 @@
             if (inputPass === CLAVE_ADMINISTRADOR) {
                 document.getElementById('admin-login-step').style.display = 'none';
                 document.getElementById('admin-form-step').style.display = 'block';
+                
+                // Cargar valores actuales en el formulario
                 document.getElementById('input-title').value = storeData.title;
                 document.getElementById('input-price').value = storeData.price;
                 document.getElementById('input-stock').value = storeData.stock;
                 document.getElementById('input-phone').value = storeData.phone;
+                document.getElementById('input-img1').value = storeData.img1 || '';
+                document.getElementById('input-img2').value = storeData.img2 || '';
+                document.getElementById('input-img3').value = storeData.img3 || '';
             } else {
                 alert("🔒 Contraseña incorrecta");
             }
@@ -539,11 +605,14 @@
             storeData.price = parseFloat(document.getElementById('input-price').value) || 50;
             storeData.stock = parseInt(document.getElementById('input-stock').value) || 0;
             storeData.phone = document.getElementById('input-phone').value;
+            storeData.img1 = document.getElementById('input-img1').value || defaultData.img1;
+            storeData.img2 = document.getElementById('input-img2').value || defaultData.img2;
+            storeData.img3 = document.getElementById('input-img3').value || defaultData.img3;
 
             localStorage.setItem('snova_store_data', JSON.stringify(storeData));
             renderStore();
             closeAdmin();
-            alert("¡Cambios guardados correctamente!");
+            alert("¡Cambios e imágenes guardados correctamente!");
         }
 
         window.onload = function() {
